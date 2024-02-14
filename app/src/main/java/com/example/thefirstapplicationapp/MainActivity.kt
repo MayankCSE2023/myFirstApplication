@@ -149,17 +149,19 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Button to indicate the next stop has been reached
         Button(
             onClick = {
-                // Handle next stop logic here
-                if (progress < 1.0) {
+                if (progress >= 1.0) {
+                    // Reset journey when progress is full
+                    progress = 0.0f
+                } else {
+                    // Handle next stop logic here
                     progress += 0.1f // Increase progress by 10% for each next stop
                 }
             },
             modifier = Modifier.padding(bottom = 16.dp)
         ) {
-            Text(text = "Next Stop Reached")
+            Text(text = if (progress >= 1.0) "Reset Journey" else "Next Stop Reached")
         }
 
         // Display the ProgressBar
@@ -179,6 +181,7 @@ class MainActivity : ComponentActivity() {
             else -> value
         }
     }
+
 
     @Preview(showBackground = true)
     @Composable
