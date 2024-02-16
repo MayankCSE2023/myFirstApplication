@@ -101,6 +101,9 @@ class MainActivity : ComponentActivity() {
         // You can use a state variable to represent the progress value
         var progress by remember { mutableStateOf(0.0f) }
 
+        // Track the index of the current stop
+        var currentStopIndex by remember { mutableStateOf(0) }
+
         // Example list of stops (you can replace it with your actual data)
         val stops = listOf(
             Stop("Stop 1", 10.0),
@@ -138,16 +141,45 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
+
+//        Card() {
+//            // Display stops information with the selected unit
+//            // Display stops information with the selected unit
+//            Column {
+//                stops.forEachIndexed { index, stop ->
+//                    val distanceUnit = if (isShowingKilometers) "km" else "miles"
+//                    val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+//                    Text(
+//                        text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
+//                        modifier = Modifier.padding(bottom = 8.dp)
+//                    )
+//                }
+//            }
+//
+//            // Display total distance covered and total distance left with unit conversion
+//            Text(
+//                text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                modifier = Modifier.padding(bottom = 8.dp)
+//            )
+//            Text(
+//                text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                modifier = Modifier.padding(bottom = 16.dp)
+//            )
+//        }
         Card() {
-            // Display stops information with the selected unit
             // Display stops information with the selected unit
             Column {
                 stops.forEachIndexed { index, stop ->
                     val distanceUnit = if (isShowingKilometers) "km" else "miles"
                     val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+
+                    // Check if the current stop has been reached and apply the color accordingly
+                    val textColor = if (index == currentStopIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+
                     Text(
                         text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        color = textColor
                     )
                 }
             }
@@ -191,9 +223,11 @@ class MainActivity : ComponentActivity() {
                     if (progress >= 1.0) {
                         // Reset journey when progress is full
                         progress = 0.0f
+                        currentStopIndex = 0
                     } else {
                         // Handle next stop logic here
                         progress += 0.1f // Increase progress by 10% for each next stop
+                        currentStopIndex = (progress * stops.size).toInt()
                     }
                 }
             ) {
