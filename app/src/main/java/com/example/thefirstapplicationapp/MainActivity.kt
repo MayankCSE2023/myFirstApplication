@@ -5,11 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -45,17 +49,32 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    data class Stop(val name: String, val distance: Double) {
+    data class Stop(val name: String, private var _distanceKm: Double) {
+        var distanceKm: Double
+            get() = _distanceKm
+            set(value) {
+                _distanceKm = value
+            }
+
+        val distanceMiles: Double
+            get() = convertDistance(_distanceKm, "km", "miles")
+
         // Function to format distance based on the selected unit
-        fun getFormattedDistance(unit: String): String {
-            return "${
-                String.format(
-                    "%.2f",
-                    if (unit == "km") distance else distance * 0.621371
-                )
-            } $unit"
+        fun getFormattedDistance(unit: String, isShowingKilometers: Boolean): String {
+            val distance = if (isShowingKilometers) _distanceKm else distanceMiles
+            return "${String.format("%.2f", distance)} $unit"
         }
+        // Function to convert miles to kilometers and vice versa
+        private fun convertDistance(value: Double, fromUnit: String, toUnit: String): Double {
+            return when {
+                fromUnit == "miles" && toUnit == "km" -> value * 1.6
+                fromUnit == "km" && toUnit == "miles" -> value / 1.6
+                else -> value
+            }
+        }
+
     }
+
 
     @Composable
     fun JourneyProgressScreen() {
@@ -101,25 +120,17 @@ class MainActivity : ComponentActivity() {
         var isShowingKilometers by remember { mutableStateOf(true) }
 
         // Calculate total distance
-        val totalDistance = stops.sumByDouble { it.distance }
-
+        val totalDistance = stops.sumByDouble { it.distanceKm }
         // Calculate distance covered and distance left with unit conversion
         val distanceCovered = convertDistance(totalDistance * progress, "km", if (isShowingKilometers) "km" else "miles")
         val distanceLeft = convertDistance(totalDistance - distanceCovered, "km", if (isShowingKilometers) "km" else "miles")
 
-
-
-        Button(
-            onClick = {
-                isShowingKilometers = !isShowingKilometers
-                // Update the progress value to trigger recomposition
-                progress += 0.0f
-            },
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Text(text = if (isShowingKilometers) "Show in Miles" else "Show in Kilometers")
-        }
-
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+        )
 
         // Display the progress value as text
         Text(
@@ -127,51 +138,72 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Display stops information with the selected unit
-        Column {
-            stops.forEachIndexed { index, stop ->
-                val distanceUnit = if (isShowingKilometers) "km" else "miles"
-                val distanceValue = convertDistance(stop.distance, distanceUnit, if (isShowingKilometers) "km" else "miles")
-                Text(
-                    text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+        Card() {
+            // Display stops information with the selected unit
+            // Display stops information with the selected unit
+            Column {
+                stops.forEachIndexed { index, stop ->
+                    val distanceUnit = if (isShowingKilometers) "km" else "miles"
+                    val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+                    Text(
+                        text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+            }
+
+            // Display total distance covered and total distance left with unit conversion
+            Text(
+                text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = {
+                    isShowingKilometers = !isShowingKilometers
+                    // Update the distances of each stop
+                    stops.forEach { stop ->
+                        stop.distanceKm = convertDistance(stop.distanceKm, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles")
+                    }
+                    // Update the progress value to trigger recomposition
+                    progress += 0.0f
+                }
+            ) {
+                Text(text = if (isShowingKilometers) "Show in Miles" else "Show in Kilometers")
+            }
+
+            Spacer(modifier = Modifier.width(6.dp)) // Adjust the space as needed
+
+            Button(
+                onClick = {
+                    if (progress >= 1.0) {
+                        // Reset journey when progress is full
+                        progress = 0.0f
+                    } else {
+                        // Handle next stop logic here
+                        progress += 0.1f // Increase progress by 10% for each next stop
+                    }
+                }
+            ) {
+                Text(text = if (progress >= 1.0) "Reset Journey" else "Next Stop")
             }
         }
 
-        // Display total distance covered and total distance left with unit conversion
-        Text(
-            text = "Total Distance Covered: ${String.format("%.2f", distanceCovered)} ${if (isShowingKilometers) "km" else "miles"}",
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Total Distance Left: ${String.format("%.2f", distanceLeft)} ${if (isShowingKilometers) "km" else "miles"}",
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Button(
-            onClick = {
-                if (progress >= 1.0) {
-                    // Reset journey when progress is full
-                    progress = 0.0f
-                } else {
-                    // Handle next stop logic here
-                    progress += 0.1f // Increase progress by 10% for each next stop
-                }
-            },
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Text(text = if (progress >= 1.0) "Reset Journey" else "Next Stop Reached")
-        }
-
-        // Display the ProgressBar
-        LinearProgressIndicator(
-            progress = progress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-        )
     }
+
+
 
     // Function to convert miles to kilometers and vice versa
     fun convertDistance(value: Double, fromUnit: String, toUnit: String): Double {
