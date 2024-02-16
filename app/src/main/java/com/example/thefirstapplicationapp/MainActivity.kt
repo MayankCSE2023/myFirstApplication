@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
@@ -116,6 +119,7 @@ class MainActivity : ComponentActivity() {
             Stop("Stop 8", 20.0),
             Stop("Stop 9", 15.0),
             Stop("Stop 10", 15.0),
+
             // Add more stops as needed
         )
 
@@ -141,31 +145,6 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-
-//        Card() {
-//            // Display stops information with the selected unit
-//            // Display stops information with the selected unit
-//            Column {
-//                stops.forEachIndexed { index, stop ->
-//                    val distanceUnit = if (isShowingKilometers) "km" else "miles"
-//                    val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
-//                    Text(
-//                        text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
-//                        modifier = Modifier.padding(bottom = 8.dp)
-//                    )
-//                }
-//            }
-//
-//            // Display total distance covered and total distance left with unit conversion
-//            Text(
-//                text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-//                modifier = Modifier.padding(bottom = 8.dp)
-//            )
-//            Text(
-//                text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
-//        }
         Card() {
             // Display stops information with the selected unit
             Column {
@@ -194,6 +173,54 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
+
+
+
+            //------------------------- Lazy Column----------------------------------------//
+
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(300.dp) // Set your desired fixed height
+//        ) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(8.dp)
+//            ) {
+//                LazyColumn {
+//                    itemsIndexed(stops) { index, stop ->
+//                        val distanceUnit = if (isShowingKilometers) "km" else "miles"
+//                        val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+//
+//                        // Check if the current stop has been reached and apply the color accordingly
+//                        val textColor = if (index == currentStopIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+//
+//                        Text(
+//                            text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
+//                            modifier = Modifier.padding(bottom = 8.dp),
+//                            color = textColor
+//                        )
+//                    }
+//
+//                    // Display total distance covered and total distance left with unit conversion
+//                    item {
+//                        Text(
+//                            text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                            modifier = Modifier.padding(bottom = 8.dp)
+//                        )
+//                    }
+//
+//                    item {
+//                        Text(
+//                            text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                            modifier = Modifier.padding(bottom = 16.dp)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+
 
 
         Row(
