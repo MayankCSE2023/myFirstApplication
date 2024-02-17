@@ -127,29 +127,18 @@ class MainActivity : ComponentActivity() {
         // Button to switch between kilometers and miles
         var isShowingKilometers by remember { mutableStateOf(true) }
 
-//        // Calculate total distance in the appropriate unit
-//        val totalDistance = convertDistance(stops.sumByDouble { it.distanceKm }, "km", if (isShowingKilometers) "km" else "miles")
-//
-//// Find the index of the current stop based on progress
-//        currentStopIndex = (progress * stops.size).toInt()
-//
-//// Calculate distance covered from the start to the current stop
-//        val distanceCovered = convertDistance(stops.take(currentStopIndex + 1).sumByDouble { it.distanceKm }, "km", if (isShowingKilometers) "km" else "miles")
-//
-//// Calculate distance left from the current stop to the end
-//        val distanceLeft = convertDistance(totalDistance - distanceCovered, "km", if (isShowingKilometers) "km" else "miles")
 
         // Calculate total distance in the appropriate unit
-        val totalDistance = convertDistance(stops.sumByDouble { it.distanceKm }, "km", if (isShowingKilometers) "km" else "miles")
+        val totalDistance = stops.sumByDouble { convertDistance(it.distanceKm, "km", if (isShowingKilometers) "km" else "miles") }
 
 // Find the index of the current stop based on progress
-           currentStopIndex = (progress * (stops.size + 1)).toInt()
+        currentStopIndex = (progress * (stops.size + 1)).toInt()
 
 // Calculate distance covered from the start to the current stop
         val distanceCovered = convertDistance(stops.take(currentStopIndex).sumByDouble { it.distanceKm }, "km", if (isShowingKilometers) "km" else "miles")
 
 // Calculate distance left from the current stop to the end
-        val distanceLeft = convertDistance(totalDistance - distanceCovered, "km", if (isShowingKilometers) "km" else "miles")
+        val distanceLeft = totalDistance - distanceCovered
 
         LinearProgressIndicator(
             progress = progress,
