@@ -109,23 +109,6 @@ class MainActivity : ComponentActivity() {
         var currentStopIndex by remember { mutableStateOf(0) }
 
         // Example list of stops (you can replace it with your actual data)
-//        val stops = listOf(
-//            Stop("Stop 1", 10.0),
-//            Stop("Stop 2", 20.0),
-//            Stop("Stop 3", 15.0),
-//            Stop("Stop 4", 10.0),
-//            Stop("Stop 5", 20.0),
-//            Stop("Stop 6", 15.0),
-//            Stop("Stop 7", 10.0),
-//            Stop("Stop 8", 20.0),
-//            Stop("Stop 9", 15.0),
-//            Stop("Stop 10", 20.0),
-//
-//            // Add more stops as needed
-//        )
-
-        //--------------------------for lazy----------------------------------
-
         val stops = listOf(
             Stop("Stop 1", 10.0),
             Stop("Stop 2", 20.0),
@@ -137,15 +120,32 @@ class MainActivity : ComponentActivity() {
             Stop("Stop 8", 20.0),
             Stop("Stop 9", 15.0),
             Stop("Stop 10", 20.0),
-            Stop("Stop 11", 20.0),
-            Stop("Stop 12", 15.0),
-            Stop("Stop 13", 10.0),
-            Stop("Stop 14", 20.0),
-            Stop("Stop 15", 15.0),
-            Stop("Stop 16", 20.0),
 
             // Add more stops as needed
         )
+
+        //--------------------------for lazy----------------------------------
+
+//        val stops = listOf(
+//            Stop("Stop 1", 10.0),
+//            Stop("Stop 2", 20.0),
+//            Stop("Stop 3", 15.0),
+//            Stop("Stop 4", 10.0),
+//            Stop("Stop 5", 20.0),
+//            Stop("Stop 6", 15.0),
+//            Stop("Stop 7", 10.0),
+//            Stop("Stop 8", 20.0),
+//            Stop("Stop 9", 15.0),
+//            Stop("Stop 10", 20.0),
+//            Stop("Stop 11", 20.0),
+//            Stop("Stop 12", 15.0),
+//            Stop("Stop 13", 10.0),
+//            Stop("Stop 14", 20.0),
+//            Stop("Stop 15", 15.0),
+//            Stop("Stop 16", 20.0),
+//
+//            // Add more stops as needed
+//        )
 
         // Button to switch between kilometers and miles
         var isShowingKilometers by remember { mutableStateOf(true) }
@@ -176,86 +176,86 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-//        Card() {
-//            // Display stops information with the selected unit
-//            // Display stops information with the selected unit
-//            Column {
-//                stops.forEachIndexed { index, stop ->
-//                    val distanceUnit = if (isShowingKilometers) "km" else "miles"
-//                    val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
-//                    val textColor = when {
-//                        index < currentStopIndex -> MaterialTheme.colorScheme.primary
-//                        index == currentStopIndex -> Color(0xFFE57373) // Use your desired orange color
-//                        else -> MaterialTheme.colorScheme.onSurface
-//                    }
-//
-//                    Text(
-//                        text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
-//                        modifier = Modifier.padding(bottom = 8.dp),
-//                        color = textColor
-//                    )
-//                }
-//            }
-//
-//// Display total distance covered and total distance left with unit conversion
-//            Text(
-//                text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-//                modifier = Modifier.padding(bottom = 8.dp)
-//            )
-//            Text(
-//                text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
-//        }
+        Card() {
+            // Display stops information with the selected unit
+            // Display stops information with the selected unit
+            Column {
+                stops.forEachIndexed { index, stop ->
+                    val distanceUnit = if (isShowingKilometers) "km" else "miles"
+                    val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+                    val textColor = when {
+                        index < currentStopIndex -> MaterialTheme.colorScheme.primary
+                        index == currentStopIndex -> Color(0xFFE57373) // Use your desired orange color
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
+
+                    Text(
+                        text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        color = textColor
+                    )
+                }
+            }
+
+// Display total distance covered and total distance left with unit conversion
+            Text(
+                text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
 
         //------------------------- Lazy Column----------------------------------------//
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp) // Set your desired fixed height
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                LazyColumn {
-                    itemsIndexed(stops) { index, stop ->
-                        val distanceUnit = if (isShowingKilometers) "km" else "miles"
-                        val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
-
-                        val textColor = when {
-                            index < currentStopIndex -> MaterialTheme.colorScheme.primary
-                            index == currentStopIndex -> Color(0xFFE57373) // Use your desired orange color
-                            else -> MaterialTheme.colorScheme.onSurface
-                        }
-                        Text(
-                            text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            color = textColor
-                        )
-                    }
-
-                    // Display total distance covered and total distance left with unit conversion
-                    item {
-                        Text(
-                            text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    }
-
-                    item {
-                        Text(
-                            text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                    }
-                }
-            }
-        }
-
-
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(300.dp) // Set your desired fixed height
+//        ) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(8.dp)
+//            ) {
+//                LazyColumn {
+//                    itemsIndexed(stops) { index, stop ->
+//                        val distanceUnit = if (isShowingKilometers) "km" else "miles"
+//                        val distanceValue = if (isShowingKilometers) stop.distanceKm else stop.distanceMiles
+//
+//                        val textColor = when {
+//                            index < currentStopIndex -> MaterialTheme.colorScheme.primary
+//                            index == currentStopIndex -> Color(0xFFE57373) // Use your desired orange color
+//                            else -> MaterialTheme.colorScheme.onSurface
+//                        }
+//                        Text(
+//                            text = "Stop ${index + 1}: Distance: ${String.format("%.2f", distanceValue)} $distanceUnit",
+//                            modifier = Modifier.padding(bottom = 8.dp),
+//                            color = textColor
+//                        )
+//                    }
+//
+//                    // Display total distance covered and total distance left with unit conversion
+//                    item {
+//                        Text(
+//                            text = "Total Distance Covered: ${String.format("%.2f", convertDistance(distanceCovered, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                            modifier = Modifier.padding(bottom = 8.dp)
+//                        )
+//                    }
+//
+//                    item {
+//                        Text(
+//                            text = "Total Distance Left: ${String.format("%.2f", convertDistance(distanceLeft, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles"))} ${if (isShowingKilometers) "km" else "miles"}",
+//                            modifier = Modifier.padding(bottom = 16.dp)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//
+//
 //        Row(
 //            modifier = Modifier
 //                .fillMaxWidth()
@@ -297,44 +297,44 @@ class MainActivity : ComponentActivity() {
 
 
         //--------------------------for lazy----------------------------------
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = {
-                    isShowingKilometers = !isShowingKilometers
-                    // Update the distances of each stop
-                    stops.forEach { stop ->
-                        stop.distanceKm = convertDistance(stop.distanceKm, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles")
-                    }
-                    // Update the progress value to trigger recomposition
-                    progress += 0.0f
-                }
-            ) {
-                Text(text = if (isShowingKilometers) "Show in Miles" else "Show in Kilometers")
-            }
-
-            Spacer(modifier = Modifier.width(6.dp)) // Adjust the space as needed
-
-            Button(
-                onClick = {
-                    if (progress >= 1.0) {
-                        // Reset journey when progress is full
-                        progress = 0.0f
-                        currentStopIndex = 0
-                    } else {
-                        // Handle next stop logic here
-                        progress += 1.0f / stops.size // Increase progress by 1/n for each next stop, where n is the total number of stops
-                        currentStopIndex = (progress * stops.size).toInt()
-                    }
-                }
-            ) {
-                Text(text = if (progress >= 1.0) "Reset Journey" else "Next Stop")
-            }
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 20.dp),
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Button(
+//                onClick = {
+//                    isShowingKilometers = !isShowingKilometers
+//                    // Update the distances of each stop
+//                    stops.forEach { stop ->
+//                        stop.distanceKm = convertDistance(stop.distanceKm, if (isShowingKilometers) "km" else "miles", if (isShowingKilometers) "km" else "miles")
+//                    }
+//                    // Update the progress value to trigger recomposition
+//                    progress += 0.0f
+//                }
+//            ) {
+//                Text(text = if (isShowingKilometers) "Show in Miles" else "Show in Kilometers")
+//            }
+//
+//            Spacer(modifier = Modifier.width(6.dp)) // Adjust the space as needed
+//
+//            Button(
+//                onClick = {
+//                    if (progress >= 1.0) {
+//                        // Reset journey when progress is full
+//                        progress = 0.0f
+//                        currentStopIndex = 0
+//                    } else {
+//                        // Handle next stop logic here
+//                        progress += 1.0f / stops.size // Increase progress by 1/n for each next stop, where n is the total number of stops
+//                        currentStopIndex = (progress * stops.size).toInt()
+//                    }
+//                }
+//            ) {
+//                Text(text = if (progress >= 1.0) "Reset Journey" else "Next Stop")
+//            }
+//        }
 
     }
 
